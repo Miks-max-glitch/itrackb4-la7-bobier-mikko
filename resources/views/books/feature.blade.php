@@ -17,7 +17,7 @@
         </tr>
             <tr>
                 <td>
-                    <a href="{{ route('books.show', ['id' => $book['id']]) }}">{{ $book['id'] }}</a>
+                    <a href="{{ route('books.show', $book['id']) }}">{{ $book['id'] }}</a>
                 </td>
                 <td>{{ $book['title'] }}</td>
                 <td>{{ $book['author'] }}</td>

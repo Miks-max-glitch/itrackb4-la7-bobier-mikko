@@ -11,16 +11,6 @@ class BookController extends Controller
         return view('books.index', ['books' => $this->books()]);
     }
 
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
     public function show(string $id)
     {
         $books = $this->books();
@@ -29,23 +19,7 @@ class BookController extends Controller
         {
             abort(404);
         }
-
         return view('books.show', ['book' => $books[$id]]);
-    }
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    public function destroy(string $id)
-    {
-        //
     }
 
     public function feature()
@@ -73,6 +47,7 @@ class BookController extends Controller
             'activeFilter' => $genre,
         ]);
     }
+    
 
     private function books()
     {

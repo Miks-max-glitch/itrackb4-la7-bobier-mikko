@@ -20,7 +20,9 @@
             @forelse ($books as $book)
                 <tr>
                     <td>
-                        <a href="{{ route('books.show', ['id' => $book['id']]) }}">{{ $loop->iteration }}</a>
+                        <a href="{{ route('books.show', ['book' => $book['id']]) }}">
+                            {{ $loop->iteration }}
+                        </a>
                     </td>
                     <td>{{ $book['title'] }}</td>
                     <td>{{ $book['author'] }}</td>
