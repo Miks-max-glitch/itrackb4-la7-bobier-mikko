@@ -7,8 +7,9 @@ use App\Http\Controllers\BookController;
 Route::get('/books/feature', [BookController::class, 'feature'])
     ->name('books.feature');
 
-Route::get('/books/filter/{genre?}', [BookController::class, 'filter'])
-    ->name('books.filter');
+Route::get('/books/filter/{genre?}', function (?string $genre = null){
+    return redirect()->route('books.index', $genre ? ['genre' => $genre] : []);
+})->name('books.filter');
 
 Route::resource('books', BookController::class)
     ->only(['index', 'show']);

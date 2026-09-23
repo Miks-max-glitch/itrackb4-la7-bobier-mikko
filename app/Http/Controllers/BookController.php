@@ -6,22 +6,44 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+
+
         private function books()
     {
         return [
             1 => ['id' => 1, 'title' => 'The Lord of the Rings', 'author' => 'J.R.R. Tolkien', 'year' => '1950', 'genre' => 'Classical'],
-            2 => ['id' => 2, 'title' => 'Spiderman', 'author' => 'Lhorenz', 'year' => '2011', 'genre' => 'Mystery'],
-            3 => ['id' => 3, 'title' => 'The Return of the King', 'author' => 'Khaliq', 'year' => '1954', 'genre' => 'Historical'],
+            2 => ['id' => 2, 'title' => 'Spiderman', 'author' => 'Lhorenz', 'year' => '1950', 'genre' => 'Mystery'],
+            3 => ['id' => 3, 'title' => 'The Return of the King', 'author' => 'Khaliq', 'year' => '1978', 'genre' => 'Historical'],
             4 => ['id' => 4, 'title' => 'World of Warcraft', 'author' => 'Lenard', 'year' => '2000', 'genre' => 'Historical'],
             5 => ['id' => 5, 'title' => 'The Hobbit', 'author' => 'Justin', 'year' => '1954', 'genre' => 'Classical'],
-            6 => ['id' => 6, 'title' => 'The World of Computers', 'author' => 'Mikko', 'year' => '2010', 'genre' => 'Mystery'],
+            6 => ['id' => 6, 'title' => 'The World of Computers', 'author' => 'Mikko', 'year' => '2000', 'genre' => 'Mystery'],
             7 => ['id' => 7, 'title' => 'Programmer', 'author' => 'Lhorenz', 'year' => '1978', 'genre' => 'Historical'],
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('books.index', ['books' => $this->books()]);
+        $genre = $request->query('genre', 'all');
+        $year = $request->query('year', 'all');
+        
+        $allBooks = $this->books();
+        $books = [];
+
+        foreach ($allBooks as $book) {
+            $matchesGenre = ($genre === 'all' || $book['genre'] === $genre);
+            $matchesYear = ($year === 'all' || $book['year'] === $year);
+            
+            if ($matchesGenre && $matchesYear) {
+                $books[] = $book;
+            }
+        }
+        
+        return view('books.index', [
+            'books' => $books,
+            'genre' => $genre,
+            'year' => $year,
+        ]);
+        //return view('books.index', ['books' => $this->books()]);
     }
 
     public function create()
@@ -68,7 +90,7 @@ class BookController extends Controller
         return view('books.feature', ['book' => $books[1]]);
     }
 
-    public function filter(?string $genre = null)
+    /* public function filter(?string $genre = null)
     {
         $books = $this->books();
 
@@ -86,5 +108,5 @@ class BookController extends Controller
             'activeFilter' => $genre,
         ]);
     }
-
+    */
 }
