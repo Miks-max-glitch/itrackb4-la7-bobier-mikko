@@ -1,23 +1,14 @@
-Q1
-You added a second filter without adding a single route. Explain why no new route was needed. Your answer should say something about what the router actually looks at.
-
-Answer: 
-The router looks at the URL path and its route parameters, not at the number of filters used. Since the second filter was handled using the existing route and its parameters, no new route was needed.
-
-Q2
-Suppose you had built both filters as route parameters instead. Describe what the URL for 'year 4 only, no course filter' would have to look like, and why.
+Q1. Your form sends data with POST rather than GET. Explain what would go wrong if it used GET instead. Your answer should say something about what a browser does when a page is refreshed.
 
 Answer:
-If both filters were route parameters, the URL for year 4 only, with no course filter would need to include a value for the year and an empty or missing value for the course, such as /books/filter/4/ depending on how the route parameters were defined. This is because the router matches the URL structure and parameter positions.
+If the form used GET, all my book data (title, author, genre, everything) would get stuffed into the URL itself, like /books?title=TheLordofTheRings&author=Tolkien, instead of being sent quietly in the background. The real issue shows up when you hit refresh browsers treat GET as just "asking" for something, so it'll happily repeat that request over and over with zero warning, which means every refresh could silently add another book. POST is different because the browser knows it's an actual instruction, not a question, so it either warns you before resubmitting or, since I redirect after saving, there's nothing left to resubmit at all. Basically GET is fine for looking at stuff, but the moment you're actually changing data, you need POST or refreshing becomes a landmine.
 
-Q3
-Your navigation link stays marked on a detail page and also when a filter is applied. Only one of those two needed a change to your pattern. Say which one, and why the other needed nothing.
-
-Answer:
-The detail page link needed a change because its URL pattern was different. The filter link did not need a change because it was already using the correct route pattern.
-
-Q4
-You deleted your old filter method but kept the empty store and update methods, even though none of the three can be reached by a URL. Explain the difference between them.
+Q2. When validation fails, your controller does not run the code that saves the record — and you did not write an if statement to stop it. Explain what actually stops it, and where the visitor ends up.
 
 Answer:
-The old filter method was used for the old filtering process, so I removed it because I no longer needed it. The store and update methods are for other actions, so I kept them even though they don't currently have a URL route.
+When validate() hits a rule that fails, it doesn't return something I have to check — it stops the method right there by throwing an exception internally. Laravel catches that on its own and redirects the visitor back to the form, bringing the error messages and whatever they typed with it. So I never needed an if statement because the code after validate() just never runs at all when something's invalid. The visitor ends up right back on the same form, now showing what went wrong next to each field.
+
+Q3. Your success message is displayed from the layout, which renders on every page. Explain why it does not appear on every page.
+
+Answer:
+The layout checks for the success message on every page, but the message itself doesn't stick around — it's a flash value, so Laravel only keeps it alive for one request after I redirect. Right after saving, that request is the redirect to the list page, so it shows up there. But the moment I refresh or go to another page, Laravel's already deleted it from the session, so the check in the layout just finds nothing and shows nothing. The layout's always checking, it's just that the message itself disappears fast.
