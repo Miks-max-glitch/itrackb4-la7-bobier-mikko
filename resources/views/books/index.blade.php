@@ -5,6 +5,8 @@
 @section('content')
 
     <h2 class="mb-3">List of Recommendations</h2>
+    <a href="{{ route('books.create') }}" class="btn btn-success mb-3">+ Add Book</a>
+
    <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
     <div>
         <span class="text-muted">Active filters:</span>

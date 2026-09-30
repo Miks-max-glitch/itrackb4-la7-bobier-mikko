@@ -6,19 +6,18 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-
-
-        private function books()
+    private function books()
     {
-        return [
-            1 => ['id' => 1, 'title' => 'The Lord of the Rings', 'author' => 'J.R.R. Tolkien', 'year' => '1950', 'genre' => 'Classical'],
-            2 => ['id' => 2, 'title' => 'Spiderman', 'author' => 'Lhorenz', 'year' => '1950', 'genre' => 'Mystery'],
-            3 => ['id' => 3, 'title' => 'The Return of the King', 'author' => 'Khaliq', 'year' => '1978', 'genre' => 'Historical'],
-            4 => ['id' => 4, 'title' => 'World of Warcraft', 'author' => 'Lenard', 'year' => '2000', 'genre' => 'Historical'],
-            5 => ['id' => 5, 'title' => 'The Hobbit', 'author' => 'Justin', 'year' => '1954', 'genre' => 'Classical'],
-            6 => ['id' => 6, 'title' => 'The World of Computers', 'author' => 'Mikko', 'year' => '2000', 'genre' => 'Mystery'],
-            7 => ['id' => 7, 'title' => 'Programmer', 'author' => 'Lhorenz', 'year' => '1978', 'genre' => 'Historical'],
-        ];
+        $path = storage_path('app/books.json');
+
+        return json_decode(file_get_contents($path), true);  
+        
+    }
+
+    private function saveBooks($allBooks)   // <-- parameter must be here
+    {
+        $path = storage_path('app/books.json');
+        file_put_contents($path, json_encode($allBooks, JSON_PRETTY_PRINT));
     }
 
     public function index(Request $request)
@@ -37,23 +36,41 @@ class BookController extends Controller
                 $books[] = $book;
             }
         }
-        
+
         return view('books.index', [
             'books' => $books,
             'genre' => $genre,
             'year' => $year,
         ]);
-        //return view('books.index', ['books' => $this->books()]);
+        
     }
 
     public function create()
     {
-        //
+        return view('books.create');
     }
 
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+           'title' => 'required | max:100',
+           'author' => 'required | max:100',
+           'year' => 'required |numeric',
+           'genre' => 'required|in:Classical,Mystery,Historical',
+        ]);
+        
+        $books = $this->books();
+
+        $newId = empty($books) ? 1 : max(array_column($books, 'id')) + 1;
+    
+        $validated['id'] = $newId;
+        $books[$newId] = $validated;
+    
+        $this -> saveBooks($books);
+
+        return redirect()
+        ->route('books.index')
+        ->with('success', 'Book added successfully.');
     }
 
     public function show(string $id)

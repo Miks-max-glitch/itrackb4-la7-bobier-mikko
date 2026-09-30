@@ -12,7 +12,7 @@ Route::get('/books/filter/{genre?}', function (?string $genre = null){
 })->name('books.filter');
 
 Route::resource('books', BookController::class)
-    ->only(['index', 'show']);
+    ->only(['index', 'show', 'create', 'store']);
 
 Route::get('/teachers/featured', [TeacherController::class, 'featured'])
      ->name('teachers.featured');

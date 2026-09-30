@@ -14,6 +14,12 @@
         <p class="text-muted mb-3">Prepared by: Mikko S. Bobier</p>
 
         @include('partials._nav')
+        
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
         @yield('content')
 
